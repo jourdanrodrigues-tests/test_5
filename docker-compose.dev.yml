@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+
+  db:
+    container_name: unbabel_dev_db
+    image: postgres:10.3
+    environment:
+      - POSTGRES_PASSWORD=unbabel_dev_pass
+      - POSTGRES_USER=unbabel_dev_user
+      - POSTGRES_DB=unbabel_dev_db
+
+  server:
+    container_name: unbabel_dev_server
+    build:
+      context: ./backend_app
+      dockerfile: Dockerfile.dev
+    command: python -m flask run --host=0.0.0.0
+    environment:
+      - DATABASE_URL=postgres://unbabel_dev_user:unbabel_dev_pass@db/unbabel_dev_db
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+      - DEBUG=True
+    volumes:
+      - ./backend_app:/app
+    ports:
+      - "5000:5000"
+    links:
+      - db
