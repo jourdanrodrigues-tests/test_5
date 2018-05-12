@@ -4,7 +4,7 @@ import os
 from flask import Blueprint
 from redis import StrictRedis
 
-from utils import HackerNewsClient, Response
+from .utils import HackerNewsClient, Response
 
 blueprint = Blueprint('views', __name__)
 
