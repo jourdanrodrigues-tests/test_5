@@ -9,7 +9,7 @@ else
   COMMAND="docker-compose ${@}"
 fi
 
-if [ "${1}" != 'build' ] && [ "${1}" != 'up' ]; then
+if [ "${1}" == 'run' ]; then
   COMMAND="${COMMAND} --rm"
 fi
 
