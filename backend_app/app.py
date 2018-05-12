@@ -3,8 +3,8 @@ from flask_cors import CORS
 from views import blueprint
 
 
-flaskApp = Flask(__name__)
+app = Flask(__name__)
 
-CORS(flaskApp)
+CORS(app)
 
-flaskApp.register_blueprint(blueprint)
+app.register_blueprint(blueprint)

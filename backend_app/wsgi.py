@@ -1,3 +1,3 @@
-from app import flaskApp
+from app import app
 
-application = flaskApp
+application = app
