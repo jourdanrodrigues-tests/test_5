@@ -1,7 +1,7 @@
 import json
 import os
 
-from flask import Blueprint, jsonify
+from flask import Blueprint
 from redis import StrictRedis
 
 from utils import HackerNewsClient, Response
@@ -45,7 +45,7 @@ def _get_clean_item_list(item_list: list) -> list:
 @blueprint.route('/api/stories/', methods=['GET'])
 def stories():
     story_list = _get_clean_item_list(hn_client('/topstories')[:10])
-    return jsonify({'data': story_list})
+    return Response(story_list).ok()
 
 
 @blueprint.route('/api/comments/<int:item_id>/', methods=['GET'])
