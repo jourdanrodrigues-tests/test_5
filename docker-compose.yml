@@ -3,7 +3,7 @@ version: "3"
 services:
 
   redis:
-    container_name: unbabel_dev_redis
+    container_name: unbabel_redis
     image: redis:3.2.11
 
   db:
