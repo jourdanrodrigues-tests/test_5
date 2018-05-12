@@ -2,6 +2,10 @@ version: "3"
 
 services:
 
+  redis:
+    container_name: unbabel_dev_redis
+    image: redis:3.2.11
+
   db:
     container_name: unbabel_db
     image: postgres:10.3
@@ -16,7 +20,9 @@ services:
     command: gunicorn -b 0.0.0.0:5000 wsgi --log-file -
     environment:
       - DATABASE_URL=postgres://unbabel_user:unbabel_pass@db/unbabel_db
+      - REDIS_URL=redis://redis/0
     ports:
       - "5000:5000"
     links:
       - db
+      - redis

@@ -2,6 +2,10 @@ version: "3"
 
 services:
 
+  redis:
+    container_name: unbabel_dev_redis
+    image: redis:3.2.11
+
   db:
     container_name: unbabel_dev_db
     image: postgres:10.3
@@ -18,6 +22,7 @@ services:
     command: python -m flask run --host=0.0.0.0
     environment:
       - DATABASE_URL=postgres://unbabel_dev_user:unbabel_dev_pass@db/unbabel_dev_db
+      - REDIS_URL=redis://redis/0
       - FLASK_APP=app.py
       - FLASK_ENV=development
       - DEBUG=True
@@ -27,3 +32,4 @@ services:
       - "5000:5000"
     links:
       - db
+      - redis
