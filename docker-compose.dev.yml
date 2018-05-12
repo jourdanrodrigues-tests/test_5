@@ -3,11 +3,11 @@ version: "3"
 services:
 
   redis:
-    container_name: unbabel_dev_redis
+    container_name: unbabel_redis
     image: redis:3.2.11
 
   db:
-    container_name: unbabel_dev_db
+    container_name: unbabel_db
     image: postgres:10.3
     environment:
       - POSTGRES_DB=unbabel_dev_db
