@@ -7,7 +7,7 @@ Create Date: ${create_date}
 """
 from alembic import op
 import sqlalchemy as sa
-${imports if imports else ''}
+${imports or else ''}
 
 # revision identifiers, used by Alembic.
 revision = ${repr(up_revision)}
@@ -17,8 +17,8 @@ depends_on = ${repr(depends_on)}
 
 
 def upgrade():
-    ${upgrades if upgrades else 'pass'}
+    ${upgrades or 'pass'}
 
 
 def downgrade():
-    ${downgrades if downgrades else 'pass'}
+    ${downgrades or 'pass'}
