@@ -1,4 +1,4 @@
-from ..db import db
+from .db import db
 
 
 class BaseModel(db.Model):
@@ -13,6 +13,12 @@ class BaseModel(db.Model):
 
     def __repr__(self):
         return '<{}: {}>'.format(self.__class__.__name__, self.id)
+
+    def save(self):
+        db.session.add(self)
+
+    def delete(self):
+        db.session.delete(self)
 
 
 class Story(BaseModel):
