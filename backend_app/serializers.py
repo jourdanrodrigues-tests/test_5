@@ -28,7 +28,7 @@ class BaseSerializer:
 
 
 class StorySerializer(BaseSerializer):
-    _fields = ['id', 'url', 'title', 'points', 'author']
+    _fields = ['id', 'url', 'title', 'points', 'author', 'content']
 
 
 class CommentSerializer(BaseSerializer):

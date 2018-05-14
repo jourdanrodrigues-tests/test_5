@@ -4,7 +4,7 @@ import requests
 from flask import jsonify
 
 
-class HackerNewsClient:
+class HackerNews:
     __api = 'https://hacker-news.firebaseio.com/v0{endpoint}.json'
 
     def __call__(self, endpoint):
@@ -15,6 +15,9 @@ class HackerNewsClient:
 
     def get_item(self, item_id):
         return self.__get('/item/{}'.format(item_id))
+
+    class WrongItemType(Exception):
+        pass
 
 
 class Response:

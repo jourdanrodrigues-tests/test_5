@@ -1,5 +1,4 @@
 from flask_sqlalchemy import SQLAlchemy, BaseQuery
-from sqlalchemy.sql import ClauseElement
 
 
 class Query(BaseQuery):
@@ -8,21 +7,6 @@ class Query(BaseQuery):
 
 
 db = SQLAlchemy(query_class=Query, session_options={'autoflush': False})
-
-
-def get_or_create(model: db.Model, defaults=None, commit=True, **kwargs):
-    instance = model.query.filter_by(**kwargs).scalar()
-    if instance:
-        return instance, False
-    else:
-        params = {
-            key: value for key, value in kwargs.items()
-            if not isinstance(value, ClauseElement)
-        }
-        params.update(defaults or {})
-        instance = model(**params)
-        instance.save(commit=commit)
-        return instance, True
 
 
 class BaseModel(db.Model):

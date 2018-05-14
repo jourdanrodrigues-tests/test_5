@@ -4,16 +4,18 @@ import os
 from flask import Blueprint
 from redis import StrictRedis
 
-from .db import get_or_create, db
+from .db import db
 from .models import Story
 from .serializers import StorySerializer
-from .utils import HackerNewsClient, Response
+from .utils import HackerNews, Response
+
+STORIES_LENGTH = 10
 
 blueprint = Blueprint('views', __name__)
 
 redis_client = StrictRedis.from_url(os.getenv('REDIS_URL'))
 
-hn_client = HackerNewsClient()
+hn_client = HackerNews()
 
 
 def _get_item(item_id):
@@ -59,42 +61,26 @@ def _get_stories_ids():
 def stories():
     stories_ids = _get_stories_ids()
 
-    length = 10
-    stories_query = Story.query.filter(Story.id.in_(stories_ids[:length]))
-    if stories_query.count() == length:
+    stories_query = Story.query.filter(Story.id.in_(stories_ids[:STORIES_LENGTH]))
+    if stories_query.count() == STORIES_LENGTH:
         data = StorySerializer(stories_query.all()).get_data()
-    else:
-        data = []
-        i = 0
-        while len(data) < 10:
-            story_id = stories_ids[i]
+        return Response(data).ok()
 
-            story = Story.query.filter_by(id=story_id).scalar()
-            if story:
-                story_data = StorySerializer(story).get_data()
-            else:
-                story = hn_client.get_item(story_id)
-
-                if story is None or story['type'] != 'story':
-                    i += 1
-                    continue
-
-                story_data = {
-                    'id': story_id,
-                    'url': story.get('url'),
-                    'time': story.get('time'),
-                    'author': story.get('by'),
-                    'title': story.get('title'),
-                    'points': story.get('score'),
-                    'content': story.get('text'),
-                }
-
-                get_or_create(Story, id=story_id, defaults=story_data, commit=False)
-
-            data.append(story_data)
+    data = []
+    i = 0
+    while len(data) < STORIES_LENGTH:
+        try:
+            story, _ = Story.query.get_or_fetch(stories_ids[i], commit=False)
+        except HackerNews.WrongItemType:
             i += 1
+            continue
 
-        db.session.commit()
+        story_data = StorySerializer(story).get_data()
+
+        data.append(story_data)
+        i += 1
+
+    db.session.commit()
 
     return Response(data).ok()
 
