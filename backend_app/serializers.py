@@ -1,7 +1,7 @@
 from typing import List
 
 from .db import db
-from exceptions import ProgrammingError
+from .exceptions import ProgrammingError
 
 
 class BaseSerializer:
