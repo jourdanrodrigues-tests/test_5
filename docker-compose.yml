@@ -17,7 +17,7 @@ services:
   server:
     container_name: unbabel_server
     build: ./backend_app
-    command: bash -c './compose.sh run flask db upgrade && gunicorn -b 0.0.0.0:5000 wsgi --log-file -'
+    command: bash -c 'flask db upgrade && gunicorn -b 0.0.0.0:5000 wsgi --log-file -'
     environment:
       - REDIS_URL=redis://redis/0
       - DATABASE_URL=postgres://unbabel_user:unbabel_pass@db/unbabel_db
