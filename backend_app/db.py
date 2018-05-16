@@ -1,9 +1,32 @@
 from flask_sqlalchemy import SQLAlchemy, BaseQuery
 
+from .utils import HackerNews
+
+hn_client = HackerNews()
+
 
 class Query(BaseQuery):
     def exists(self, **kwargs):
         return self.filter_by(**kwargs).first() is not None
+
+    def __get_model(self):
+        return self._entities[0].type
+
+    def get_or_fetch(self, item_id, commit=True):
+        instance = self.filter_by(id=item_id).scalar()
+        if instance:
+            return instance, False
+
+        item = hn_client.get_item(item_id)
+        model = self.__get_model()
+
+        if not item or item['type'] != model.__name__.lower():
+            raise HackerNews.WrongItemType()
+
+        instance = model.serializer_class(data=item).get_instance()
+        instance.save(commit=commit)
+
+        return instance, True
 
 
 db = SQLAlchemy(query_class=Query, session_options={'autoflush': False})
