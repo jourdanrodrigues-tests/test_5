@@ -20,7 +20,13 @@ class Query(BaseQuery):
         item = hn_client.get_item(item_id)
         model = self.__get_model()
 
-        if not item or item['type'] != model.__name__.lower():
+        if not item:
+            raise HackerNews.NullItem()
+        elif item.get('dead'):
+            raise HackerNews.DeadItem()
+        elif item.get('deleted'):
+            raise HackerNews.DeletedItem()
+        elif item['type'] != model.__name__.lower():
             raise HackerNews.WrongItemType()
 
         instance = model.serializer_class(data=item).get_instance()

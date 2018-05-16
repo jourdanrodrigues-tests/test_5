@@ -15,8 +15,5 @@ class Story(BaseModel):
 class Comment(BaseModel):
     __tablename__ = 'comment'
 
-    dead = db.Column('dead', db.Boolean(), unique=False, nullable=False, default=False)
-    deleted = db.Column('deleted', db.Boolean(), unique=False, nullable=False, default=False)
-
     # Not an explicit foreign key because it can come from both models
     parent_id = db.Column('parent_id', db.Integer, unique=False, nullable=False)

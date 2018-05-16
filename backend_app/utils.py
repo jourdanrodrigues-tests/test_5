@@ -16,7 +16,19 @@ class HackerNews:
     def get_item(self, item_id):
         return self.__get('/item/{}'.format(item_id))
 
-    class WrongItemType(Exception):
+    class Error(Exception):
+        pass
+
+    class NullItem(Error):
+        pass
+
+    class DeadItem(Error):
+        pass
+
+    class DeletedItem(Error):
+        pass
+
+    class WrongItemType(Error):
         pass
 
 

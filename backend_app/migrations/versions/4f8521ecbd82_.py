@@ -16,10 +16,8 @@ def upgrade():
     op.create_table(
         'comment',
         sa.Column('id', sa.Integer(), nullable=False),
-        sa.Column('content', sa.Text(), nullable=True),
+        sa.Column('content', sa.Text(), nullable=False),
         sa.Column('time', sa.Integer(), nullable=False),
-        sa.Column('dead', sa.Boolean(), nullable=False),
-        sa.Column('deleted', sa.Boolean(), nullable=False),
         sa.Column('parent_id', sa.Integer(), nullable=False),
         sa.Column('author', sa.String(length=20), nullable=False),
         sa.PrimaryKeyConstraint('id'),

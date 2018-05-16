@@ -49,18 +49,23 @@ class BaseSerializer:
 
 
 class StorySerializer(BaseSerializer):
+    _model = Story
     _fields = ['id', 'url', 'title', 'points', 'author', 'content', 'time']
     _fields_map = {
         'by': 'author',
         'text': 'content',
         'score': 'points',
     }
-    _model = Story
 
 
 class CommentSerializer(BaseSerializer):
-    _fields = ['id', 'content', 'author', 'dead', 'deleted', 'parent_id', 'time']
     _model = Comment
+    _fields = ['id', 'content', 'author', 'parent_id', 'time']
+    _fields_map = {
+        'by': 'author',
+        'text': 'content',
+        'parent': 'parent_id',
+    }
 
 
 # For convenience

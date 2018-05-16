@@ -1,12 +1,13 @@
 import json
 import os
+from typing import List
 
 from flask import Blueprint
 from redis import StrictRedis
 
 from .db import db
-from .models import Story
-from .serializers import StorySerializer
+from .models import Story, Comment
+from .serializers import StorySerializer, CommentSerializer
 from .utils import HackerNews, Response
 
 STORIES_LENGTH = 10
@@ -18,35 +19,6 @@ redis_client = StrictRedis.from_url(os.getenv('REDIS_URL'))
 hn_client = HackerNews()
 
 
-def _get_item(item_id):
-    str_item_id = str(item_id)
-    item = redis_client.get(str_item_id)
-    if item:
-        return json.loads(item)
-    else:
-        item = hn_client.get_item(item_id)
-
-        if item is None:
-            return
-
-        del item['type']  # We don't need it
-
-        redis_client.set(str_item_id, json.dumps(item))
-
-        return item
-
-
-def _get_clean_item_list(item_list: list) -> list:
-    _item_list = []
-
-    for item_id in item_list:
-        item = _get_item(item_id)
-        item.pop('kids', None)
-        _item_list.append(item)
-
-    return _item_list
-
-
 def _get_stories_ids():
     stories_ids = redis_client.get('stories_ids')
     if stories_ids:
@@ -55,6 +27,18 @@ def _get_stories_ids():
         stories_ids = hn_client('/topstories')
         redis_client.set('stories_ids', json.dumps(stories_ids), ex=10)
     return stories_ids
+
+
+def _get_comments_from_item(item_id: int) -> List[int]:
+    item_id_str = str(item_id)
+    comment = redis_client.hget('comments', item_id_str)
+    if comment:
+        comment = json.loads(comment)
+    else:
+        comment = hn_client.get_item(item_id)
+        redis_client.hset('comments', item_id_str, json.dumps(comment))
+        redis_client.expire(name='comments', time=20)
+    return comment.pop('kids', [])
 
 
 @blueprint.route('/api/stories/', methods=['GET'])
@@ -85,12 +69,25 @@ def stories():
 
 @blueprint.route('/api/comments/<int:item_id>/', methods=['GET'])
 def comments(item_id):
-    item = _get_item(item_id)
+    comments_ids = _get_comments_from_item(item_id)
 
-    no_item_or_no_comments = not item or not bool(item.get('kids', []))
-    if no_item_or_no_comments:
-        return Response('Not found').not_found()
+    if not comments_ids:
+        return Response([]).ok()
 
-    _comments = _get_clean_item_list(item['kids'])
+    comments_query = Comment.query.filter(Comment.id.in_(comments_ids))
+    if comments_query.count() == len(comments_ids):
+        data = CommentSerializer(comments_query.all()).get_data()
+        return Response(data).ok()
 
-    return Response(_comments).ok()
+    data = []
+    for comment_id in comments_ids:
+        try:
+            comment, _ = Comment.query.get_or_fetch(comment_id, commit=False)
+        except HackerNews.Error:
+            pass
+        else:
+            data.append(CommentSerializer(comment).get_data())
+
+    db.session.commit()
+
+    return Response(data).ok()
