@@ -72,13 +72,11 @@ def stories():
         try:
             story, _ = Story.query.get_or_fetch(stories_ids[i], commit=False)
         except HackerNews.WrongItemType:
+            pass
+        else:
+            data.append(StorySerializer(story).get_data())
+        finally:
             i += 1
-            continue
-
-        story_data = StorySerializer(story).get_data()
-
-        data.append(story_data)
-        i += 1
 
     db.session.commit()
 
