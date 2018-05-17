@@ -1,6 +1,12 @@
 # Files
 .DS_Store
+frontend_app/npm-debug.log*
 *.py[cod]
+
+# Directories
+frontend_app/build
+frontend_app/coverage
+frontend_app/node_modules
 
 # JetBrains settings: https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
 # User-specific stuff
