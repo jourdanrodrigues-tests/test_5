@@ -14,3 +14,9 @@ services:
       - FLASK_ENV=development
     volumes:
       - ./backend_app:/app
+
+  frontend:
+    container_name: unbabel_dev_frontend
+    command: npm start
+    volumes:
+      - ./frontend_app:/app

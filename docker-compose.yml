@@ -26,3 +26,13 @@ services:
     links:
       - db
       - redis
+
+  frontend:
+    container_name: unbabel_frontend
+    build: ./frontend_app
+    command: node .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
