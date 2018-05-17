@@ -2,12 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 
 import logo from './logo.png'
+import StoryRow from './containers/StoryRow'
 
-const Wrapper = styled.div`
+const Header = styled.div`
   padding: 3px;
   display: flex;
   align-items: center;
-  background-color: #ff6503;
+  background-color: #FF6503;
 `
 
 const Title = styled.span`
@@ -21,6 +22,8 @@ const Logo = styled.img`
   border: 1px solid white;
 `
 
+const menuItemMargin = '.5em'
+
 const Menu = styled.ul`
   margin: 0;
   display: flex;
@@ -33,31 +36,37 @@ const Menu = styled.ul`
     &:not(:last-child):after {
       content: '|';
       display: block;
-      margin-left: .5em;
-      margin-right: .5em;
+      margin-left: ${menuItemMargin};
+      margin-right: ${menuItemMargin};
     }
   }
 `
 
-class App extends React.Component {
-  render() {
-    return (
-      <Wrapper>
-        <Logo src={logo}/>
-        <Title>Hacker News</Title>
-        <Menu>
-          <li>welcome</li>
-          <li>new</li>
-          <li>threads</li>
-          <li>comments</li>
-          <li>show</li>
-          <li>ask</li>
-          <li>jobs</li>
-          <li>submit</li>
-        </Menu>
-      </Wrapper>
-    )
-  }
-}
+const Body = styled.div`
+  padding: .5em 0 1em .5em;
+  background-color: #F6F6F0;
+`
+
+const App = () => (
+  <div>
+    <Header>
+      <Logo src={logo}/>
+      <Title>Hacker News</Title>
+      <Menu>
+        <li>welcome</li>
+        <li>new</li>
+        <li>threads</li>
+        <li>comments</li>
+        <li>show</li>
+        <li>ask</li>
+        <li>jobs</li>
+        <li>submit</li>
+      </Menu>
+    </Header>
+    <Body>
+      <StoryRow/>
+    </Body>
+  </div>
+)
 
 export default App
