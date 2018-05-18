@@ -1,8 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
+
+import {getHost, getHoursDifferenceFromNow} from '../utils'
 
 const Wrapper = styled.div`
   display: flex;
+  
+  &:not(:first-child) {
+    margin-top: .5em;
+  }
 `
 
 const hideButtonMargin = '.3em'
@@ -20,9 +27,11 @@ const HideButton = styled.span`
   }
 `
 
-const Counter = styled.span`
+const Number = styled.span`
   width: 2em;
+  display: flex;
   color: #99999A;
+  align-items: center;
 `
 
 const Content = styled.div`
@@ -34,8 +43,18 @@ const Title = styled.span`
   font-size: 11pt;
 `
 
-const HostLink = styled.span`
+const Anchor = styled.a`
+  color: inherit;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+const HostLink = styled(Anchor)`
   font-size: 9pt;
+  cursor: pointer;
   margin-left: .25em;
   color: ${secondaryTextColor};
 `
@@ -46,21 +65,38 @@ const BottomSection = styled.div`
   color: ${secondaryTextColor};
 `
 
-const StoryRow = () => (
-  <Wrapper>
-    <Counter>1.</Counter>
-    <Content>
-      <div>
-        <Title>A very big and descriptive title about some sort of random subject</Title>
-        <HostLink>(web.site)</HostLink>
-      </div>
-      <BottomSection>
-        <span>62 points by <a>user</a> 3 hours ago</span>
-        <HideButton>hide</HideButton>
-        <span>14 comments</span>
-      </BottomSection>
-    </Content>
-  </Wrapper>
-)
+const StoryRow = props => {
+  const host = getHost(props.url)
+  const hours = getHoursDifferenceFromNow(props.time)
+  const hoursPlural = hours !== 1 ? 's' : ''
+  return (
+    <Wrapper>
+      <Number>{props.number}.</Number>
+      <Content>
+        <div>
+          <Title>{props.title}</Title>
+          <HostLink>({host})</HostLink>
+        </div>
+        <BottomSection>
+          <span>
+            {props.points} points by&nbsp;
+            <Anchor href="#">{props.author}</Anchor>&nbsp;
+            <Anchor>{hours} hour{hoursPlural} ago</Anchor>
+          </span>
+          <HideButton>hide</HideButton>
+          <span>14 comments</span>
+        </BottomSection>
+      </Content>
+    </Wrapper>
+  )
+}
+
+StoryRow.propTypes = {
+  url: PropTypes.string,
+  title: PropTypes.string,
+  author: PropTypes.string,
+  number: PropTypes.number,
+  points: PropTypes.number,
+}
 
 export default StoryRow

@@ -11,6 +11,13 @@ if (!NODE_ENV) {
   )
 }
 
+const API_URL = process.env.API_URL
+if (!API_URL) {
+  throw new Error(
+    'The API_URL environment variable is required but was not specified.'
+  )
+}
+
 const dotenvFiles = [
   `${paths.dotenv}.${NODE_ENV}.local`,
   `${paths.dotenv}.${NODE_ENV}`,
@@ -47,6 +54,7 @@ function getClientEnvironment(publicUrl) {
       },
       {
         NODE_ENV: process.env.NODE_ENV || 'development',
+        API_URL: process.env.API_URL.replace(/\/$/, ''),
         PUBLIC_URL: publicUrl,
       }
     )

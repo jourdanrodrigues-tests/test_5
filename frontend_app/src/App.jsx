@@ -1,3 +1,4 @@
+import axios from 'axios'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -47,26 +48,41 @@ const Body = styled.div`
   background-color: #F6F6F0;
 `
 
-const App = () => (
-  <div>
-    <Header>
-      <Logo src={logo}/>
-      <Title>Hacker News</Title>
-      <Menu>
-        <li>welcome</li>
-        <li>new</li>
-        <li>threads</li>
-        <li>comments</li>
-        <li>show</li>
-        <li>ask</li>
-        <li>jobs</li>
-        <li>submit</li>
-      </Menu>
-    </Header>
-    <Body>
-      <StoryRow/>
-    </Body>
-  </div>
-)
+class App extends React.Component {
+  state = {
+    stories: [],
+  }
+
+  async componentWillMount() {
+    const response = await axios.get(`${process.env.API_URL}/stories/`)
+    this.setState({
+      stories: response.data.data,
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <Header>
+          <Logo src={logo}/>
+          <Title>Hacker News</Title>
+          <Menu>
+            <li>welcome</li>
+            <li>new</li>
+            <li>threads</li>
+            <li>comments</li>
+            <li>show</li>
+            <li>ask</li>
+            <li>jobs</li>
+            <li>submit</li>
+          </Menu>
+        </Header>
+        <Body>
+          {this.state.stories.map((story, i) => <StoryRow key={story.id} number={i + 1} {...story}/>)}
+        </Body>
+      </div>
+    )
+  }
+}
 
 export default App
