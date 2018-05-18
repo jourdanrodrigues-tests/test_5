@@ -20,6 +20,7 @@ def upgrade():
         sa.Column('time', sa.Integer(), nullable=False),
         sa.Column('parent_id', sa.Integer(), nullable=False),
         sa.Column('author', sa.String(length=20), nullable=False),
+        sa.Column('comments', sa.Integer(), nullable=False, default=0),
         sa.PrimaryKeyConstraint('id'),
     )
     op.create_table(
@@ -31,6 +32,7 @@ def upgrade():
         sa.Column('url', sa.String(length=200), nullable=True),
         sa.Column('title', sa.String(length=200), nullable=False),
         sa.Column('author', sa.String(length=20), nullable=False),
+        sa.Column('comments', sa.Integer(), nullable=False, default=0),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('title'),
     )

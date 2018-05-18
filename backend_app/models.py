@@ -11,6 +11,7 @@ class Model(BaseModel):
     time = db.Column('time', db.Integer, unique=False, nullable=False)
     content = db.Column('content', db.Text(), unique=False, nullable=True)
     author = db.Column('author', db.String(20), unique=False, nullable=False)
+    comments = db.Column('comments', db.Integer, unique=False, nullable=False, default=0)
 
 
 class Story(Model):

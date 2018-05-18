@@ -15,9 +15,18 @@ const Wrapper = styled.div`
 const hideButtonMargin = '.3em'
 const secondaryTextColor = '#878987'
 
-const HideButton = styled.span`
-  display: flex;
+const Anchor = styled.a`
+  color: inherit;
   cursor: pointer;
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+const HideButton = styled(Anchor)`
+  display: flex;
   
   &:after, &:before {
     content: '|';
@@ -43,18 +52,8 @@ const Title = styled.span`
   font-size: 11pt;
 `
 
-const Anchor = styled.a`
-  color: inherit;
-  text-decoration: none;
-  
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
 const HostLink = styled(Anchor)`
   font-size: 9pt;
-  cursor: pointer;
   margin-left: .25em;
   color: ${secondaryTextColor};
 `
@@ -67,8 +66,13 @@ const BottomSection = styled.div`
 
 const StoryRow = props => {
   const host = getHost(props.url)
+
   const hours = getHoursDifferenceFromNow(props.time)
   const hoursPlural = hours !== 1 ? 's' : ''
+
+  const {comments} = props
+  const commentsPlural = comments !== 1 ? 's' : ''
+
   return (
     <Wrapper>
       <Number>{props.number}.</Number>
@@ -84,7 +88,7 @@ const StoryRow = props => {
             <Anchor>{hours} hour{hoursPlural} ago</Anchor>
           </span>
           <HideButton>hide</HideButton>
-          <span>14 comments</span>
+          <Anchor>{comments} comment{commentsPlural}</Anchor>
         </BottomSection>
       </Content>
     </Wrapper>
@@ -97,6 +101,7 @@ StoryRow.propTypes = {
   author: PropTypes.string,
   number: PropTypes.number,
   points: PropTypes.number,
+  comments: PropTypes.number,
 }
 
 export default StoryRow
