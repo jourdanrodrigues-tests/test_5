@@ -41,11 +41,6 @@ db = SQLAlchemy(query_class=Query, session_options={'autoflush': False})
 class BaseModel(db.Model):
     __abstract__ = True
 
-    id = db.Column('id', db.Integer, primary_key=True)
-    time = db.Column('time', db.Integer, unique=False, nullable=False)
-    content = db.Column('content', db.Text(), unique=False, nullable=True)
-    author = db.Column('author', db.String(20), unique=False, nullable=False)
-
     def __str__(self):
         return str(self.id)
 
